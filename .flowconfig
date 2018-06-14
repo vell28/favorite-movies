@@ -1,0 +1,12 @@
+[include]
+
+[ignore]
+    .*/node_modules/
+    ./publick
+[libs]
+
+[lints]
+
+[options]
+
+[version]
