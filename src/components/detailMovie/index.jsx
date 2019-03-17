@@ -4,15 +4,17 @@ import { Link } from 'react-router-dom';
 
 type PropsType = {
     onClick: Function,
+    favorite: Array<string>,
     result: Object,
     error: string
 }
 
-const Detail  = ({ onClick, result, error }:PropsType ) => {
+const Detail = ({ onClick, result, error, favorite }:PropsType ) => {
+    const getFavorite = favorite.find(item => Number(item) === Number(result.id));
     return (
         <div className="row single-movies-wrap">
             {
-                result.image ? <div className="single-movies-info-wrap">
+                result && result.image ? <div className="single-movies-info-wrap">
                     <div className="col-md-4 single-movies-left-wrap">
                         <h2>{result.name}</h2>
                         <h4><b>Premiered: {result.premiered}</b></h4>
@@ -28,7 +30,7 @@ const Detail  = ({ onClick, result, error }:PropsType ) => {
                         </p>
                     </div>
                     <div className="col-md-8 single-movies-rigth-wrap">
-                        <p>{result.summary}</p>
+                        <div dangerouslySetInnerHTML={{ __html: result.summary }}></div>
                         <div className="single-movie-btn-wrap">
                             <Link
                                 to={'/'}
@@ -39,10 +41,11 @@ const Detail  = ({ onClick, result, error }:PropsType ) => {
                             <button
                                 data-id={result.id}
                                 className="btn btn-primary"
-                                onClick={onClick}
+                                onClick={!getFavorite ? onClick : null}
+                                disabled={getFavorite}
                             >
                                 Add to favorite
-                                    </button>
+                            </button>
                         </div>
                     </div>
                 </div>

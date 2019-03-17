@@ -3,30 +3,38 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { getAllPosts } from '../../actions/getPostAction';
-import AddToLocalStorage from '../../services/AddToLocalStorage';
+import { initAddToFavorite } from '../../actions/addMovieToFavorite';
 import Home from '../../components/home';
+import {
+    getFavorites,
+    getMovies,
+    getLoading,
+    getError
+ } from '../../selectors';
 
 type Props = {
     result: Array<any>, 
+    favorites: Array<any>,
     error: Object,
     isLoading: boolean,
     getAllPosts: ActionCreator,
+    initAddToFavorite: ActionCreator,
     getMovies: Props
 }
 
 class StartPage extends React.Component<Props> {
 
-    
     componentDidMount (){
-        this.props.getAllPosts();
+        this.props.getAllPosts(0);
+        this.props.initAddToFavorite();
     }
 
     onClick = (e) => {
-        AddToLocalStorage(e.target.getAttribute('data-id'));
+        this.props.initAddToFavorite(e.target.getAttribute('data-id'));
     }
 
     render() {
-        const { result, error, isLoading } = this.props.getMovies;
+        const { result, error, isLoading, favorites } = this.props;
         return (
             <div>
                 <Home 
@@ -34,6 +42,7 @@ class StartPage extends React.Component<Props> {
                     error = { error }
                     isLoading = { isLoading }
                     onClick = { this.onClick }
+                    favorites={favorites}
                 />
             </div>     
         )
@@ -42,11 +51,14 @@ class StartPage extends React.Component<Props> {
 
 const mapStateToProps:any = (state) => {
     return {
-        getMovies: state.AllPosts
+        result: getMovies(state), 
+        isLoading: getLoading(state),
+        favorites: getFavorites(state),
+        error: getError(state)
     }
-}
+};
 
 export default connect(
     mapStateToProps,
-    {getAllPosts}
+    {getAllPosts, initAddToFavorite}
 )(StartPage);

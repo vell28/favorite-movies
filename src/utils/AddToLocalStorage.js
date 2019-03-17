@@ -1,5 +1,4 @@
-export default function AddToLocalStorage (movie){
-
+export default function addToLocalStorage (movie){
     if (!localStorage['favoriteMovie']) {
 
         localStorage.setItem('favoriteMovie', JSON.stringify([movie]));

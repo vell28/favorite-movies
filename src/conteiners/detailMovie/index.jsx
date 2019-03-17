@@ -4,12 +4,21 @@ import { connect } from 'react-redux';
 
 import { getSingleMovie } from '../../actions/getSingleMovieAction';
 import Detail from '../../components/detailMovie';
-import AddToLocalStorage from '../../services/AddToLocalStorage';
+import { initAddToFavorite } from '../../actions/addMovieToFavorite';
+import {
+    getMovie,
+    getSingleError,
+    getFavorites,
+ } from '../../selectors';
+
 
 type Props ={
     getSingleMovie: ActionCreator,
-    sigleMovie: Object ,
+    initAddToFavorite: ActionCreator,
+    result: Object,
+    error: string,
     match: Object,
+    favorite: Array<any>,
     params: Object,
     id: number
 }
@@ -22,22 +31,23 @@ type State = {
 
 class DetailPage extends React.Component<Props, State> {
 
-    componentWillMount (){
+    componentDidMount (){
         this.props.getSingleMovie({ id: this.props.match.params.id });
     }
 
     onClick = (e: any) => {
-        AddToLocalStorage(e.target.getAttribute('data-id'));
+        this.props.initAddToFavorite(e.target.getAttribute('data-id'));
     }
 
     render() {
-        const { result, error } = this.props.sigleMovie;
+        const { result, error, favorite } = this.props;
         return (
             <div>
                 <Detail 
                     result = { result }
                     error = { error }
                     onClick = { this.onClick }
+                    favorite={ favorite }
                 />
             </div>     
         )
@@ -46,11 +56,13 @@ class DetailPage extends React.Component<Props, State> {
 
 const mapStateToProps = ( state: any ) => {
     return {
-        sigleMovie: state.SingleMovie
+        result: getMovie(state),
+        error: getSingleError(state),
+        favorite: getFavorites(state)
     } 
 }
 
 export default connect(
     mapStateToProps, 
-    { getSingleMovie }
+    { getSingleMovie, initAddToFavorite }
 )(DetailPage);

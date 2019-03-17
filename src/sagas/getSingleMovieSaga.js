@@ -9,7 +9,6 @@ import HTTP_Request from '../services/HTTTP_Request';
 import { Config } from '../config';
 
 function* callSingleMovie({payload}) {
-
     const response = yield call(HTTP_Request, `GET`, `${Config.getMovie}/${payload.id}`);
 
     if(response.id) {
